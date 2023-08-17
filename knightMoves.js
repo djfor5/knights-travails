@@ -14,6 +14,8 @@ function knightMoves(startCoor, endCoor, maxWidth = 8, maxHeight = 8) {
   const queue = [];
   queue.push(startCoor);
   queue[0].push(0); // add initial distance of 0 for starting coordinates
+  queue[0].push([]);
+  queue[0][3].push([startCoor[0], startCoor[1]]);
 
   let current;
   while (queue.length) {
@@ -23,15 +25,19 @@ function knightMoves(startCoor, endCoor, maxWidth = 8, maxHeight = 8) {
     const dist = current[2];
 
     if (x === endCoor[0] && y === endCoor[1]) { // if current coordinates match end coordinates
-      return dist;
+      const moves = Array.from(current[3]);
+      const numberOfMoves = moves.length - 1; // subtract 1 as array includes starting position
+      return { moves, numberOfMoves };
     }
     if (visited[x][y] === false) {
       visited[x][y] = true;
       for (let i = 0; i < dx.length; i++) {
+        const moves = Array.from(current[3]);
         const x1 = x + dx[i];
         const y1 = y + dy[i];
+        moves.push([x1, y1]);
         if (x1 >= 0 && x1 < maxWidth && y1 >= 0 && y1 < maxHeight) {
-          queue.push([x1, y1, dist + 1]);
+          queue.push([x1, y1, dist + 1, moves]);
         }
       }
     }
@@ -40,4 +46,6 @@ function knightMoves(startCoor, endCoor, maxWidth = 8, maxHeight = 8) {
 
 const start = [1, 5];
 const end = [7, 7];
-console.log(knightMoves(start, end));
+const knight = knightMoves(start, end);
+console.log(knight.moves);
+console.log(knight.numberOfMoves);
